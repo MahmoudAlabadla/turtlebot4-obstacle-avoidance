@@ -11,7 +11,7 @@ setup(
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
     ],
-    install_requires=['setuptools'],
+    install_requires=['setuptools','rclpy','geometry_msg','sensor_msgs'],
     zip_safe=True,
     maintainer='ros',
     maintainer_email='ros@todo.todo',
