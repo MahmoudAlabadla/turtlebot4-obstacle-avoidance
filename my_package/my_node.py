@@ -11,9 +11,14 @@ class PubSubNode(Node):
 		self.laser_sub_ = self.create_subscription(LaserScan,'/scan',self.listener_callback,10)
 		
 	def listener_callback(self, laser: LaserScan):   #laser is only a variable 
-		msg = Twist()
-		msg.linear.x = 1.0
-		msg.angular.z = 1.0
+		msg = Twist()	
+		full_range = len(laser.ranges)
+		if (laser.ranges[full_range//4] > 0.2):
+				msg.linear.x = 1.0
+			else:
+				msg.linear.x = -1.0 		
+		
+		#msg.angular.z = 0.0
 		self.cmd_pub_.publish(msg)
 		
 		# Next step is to get 1 value in the direction directly forward to the robot and then 
