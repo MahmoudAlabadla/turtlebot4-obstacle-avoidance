@@ -13,10 +13,12 @@ class PubSubNode(Node):
 	def listener_callback(self, laser: LaserScan):   #laser is only a variable 
 		msg = Twist()	
 		full_range = len(laser.ranges)
-		if (laser.ranges[full_range//4] > 0.2):
-				msg.linear.x = 1.0
+		if (laser.ranges[full_range//4] > 0.85):
+				msg.linear.x = 0.5
+				#msg.angular.z = 0.0
 			else:
-				msg.linear.x = -1.0 		
+				msg.linear.x = 0.5
+				msg.angular.z = 1		
 		
 		#msg.angular.z = 0.0
 		self.cmd_pub_.publish(msg)
