@@ -1,0 +1,62 @@
+checking function
+
+
+what is this function doing ?
+
+	1) one parameter, right or left 
+	2) return the value of the lowest value in the list of ranges
+	3) same logic liket the scanning_Ranges function but only for one direction
+	4) should also check fixed global data 
+	5) should give back the lowest value seen by the 
+	
+int check (int check_direction){
+
+
+int lowest_Right = Max;				#local 
+int lowest_mid_Right = Max;			#local
+int lowest _Left = Max ;			#local
+int lowest_mid_Left = Max;			#local
+
+
+	if (check_direction == right ){ 
+		for (int i = (right_rpl - sides_degrees_Range); i<= (right_rpl + sides_degrees_Range) ; i++){
+			
+			if (full_range[i] < lowest_Right){
+				lowest_Right = full_range[i];
+			}	
+		}
+		for (int i = (mid_Right - sides_degrees_Range); i<= (mid_Right + sides_degrees_Range); i++){
+		
+			if (full_Range[i] < lowest_mid_Right){
+				lowest_mid_Right = full_Range[i];
+			}			
+		}	
+		
+		if (lowest_mid_Right < lowest_Right){
+			return lowest_mid_Right;		
+		}else
+			return lowest_right;
+	}
+	else{
+		
+		for (int i = (left_rpl - sides_degrees_Range); i<= (left_rpl + sides_degrees_Range) ; i++){
+			
+			if (full_range[i] < lowest_Left){
+				lowest_Left = full_range[i];
+			}	
+		}
+		for (int i = (mid_left - sides_degrees_Range); i<= (mid_left + sides_degrees_Range); i++){
+		
+			if (full_Range[i] < lowest_mid_Left){
+				lowest_mid_Left = full_Range[i];
+			}			
+		}	
+		
+		if (lowest_mid_Left < lowest_Left){
+			return lowest_mid_Left;		
+		}else
+			return lowest_Left;
+		
+		}
+	}
+	

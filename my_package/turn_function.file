@@ -1,0 +1,31 @@
+function to turn the robot
+
+this function should be only called from within the scanning function.
+
+## function description ##
+	
+	1) parameter of this function is the laserBeamPos
+
+	2) this function should be able to call another function that would check distances for objects on both sides of the robot while giving feedback and not execute any other functions.
+	
+	
+####
+
+void turn (int laserBeamPos){
+
+	msg.linear.x = 0.35		# slow down robot first
+	
+	## check right and left 
+	
+	check(right); 		# return the distance from objects (lowest number in range of laserBeam data)
+	check(left);		# same
+	
+	if (right > left){
+		msg.angular.z = 1.5;
+		publish the message here and exit this funtion.
+	}else if (right < left){
+		msg.angular.z = -1.5;
+		publish the message and exit this function.
+	}
+	
+{

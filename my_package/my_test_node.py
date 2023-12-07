@@ -12,40 +12,67 @@ class PubSubNode(Node):
 		
 	def listener_callback(self, laser: LaserScan):   #laser is only a variable 
 		
+		msg = Twist()
+		full_range = len(laser.ranges)
+		
 		forward_rpl = laser.ranges[full_range//4]
 		left_rpl = laser.ranges[(full_range//4)//2] 
+		mid_left = laser.ranges[((full_range//4)//2)+((full_range//4)//4)]
 		right_rpl = laser.ranges[int((full_range//2)*(3/4))]
-	
-		msg = Twist()	
-		full_range = len(laser.ranges)
-		###################        start_moving         ####################
-				
-		###################        Forward_Beam         ####################
-		if ( forward_rpl < 0.75): #Forward_Beam
-				
-				msg.linear.x = 0.5								
-				msg.angular.z = 1.0
-				
-				## what should decide the rot direction now !!??? maybe better to check both the sides and decide accordingly rather than randomly	
-				
-		###################        Left_Beam         ####################
-		elif (left_rpl < 0.65): 
-				
-				msg.linear.x = 0.5
-				msg.angular.z = 1.0
-						
-		###################        Right_Beam         ####################		
-		elif (rigth_rpl < 0.65):
-				
-				msg.linear.x = 0.5
-				msg.angular.z = -1.0
-					
-		else:	
-				msg.linear.x = 0.5
-				msg.angular.z = 0.0	
+		mid_right = laser.ranges[int((full_range//2)*(3/4))-((full_range//4)//4)]
+		far_right_rpl = laser.ranges[int((full_range // 4)*1.75)]
+		far_left_rpl = laser.ranges [((full_range//4)//2)//2]
 		
+		max_Speed = 0.5
+		stop = 0.0
+		turn_Angle = 1.0
+		special_Case_Angle = 1.2
+		slow_Down = 0.35
+		sensor_Threshold = 0.65
+		special_Case_Threshold = 0.55
+	
+		## stuck? rotate 180 degrees. ## fix distance values after testing
+		if ((forward_rpl < sensor_Threshold)and(mid_left < sensor_Threshold)and(mid_right < sensor_Threshold)):
+			
+			msg.linear.x = stop						
+			msg.angular.z = -special_Case_Angle
+			
+		elif ((forward_rpl < special_Case_Threshold)and(mid_left < sensor_Threshold)or(mid_right < sensor_Threshold)):
+		
+			msg.linear.x = stop
+			msg.angular.z = -turn_Angle
+		else:
+			##    Forward_Beam  ## Addition of right and left values help determine better rotational angle
+			if ((forward_rpl < sensor_Threshold)and(left_rpl >= right_rpl)): 
+					
+					msg.linear.x = slow_Down								
+					msg.angular.z = turn_Angle
+					
+					
+			elif ((forward_rpl < sensor_Threshold)and(right_rpl > left_rpl)):
+			
+					msg.linear.x = slow_Down								
+					msg.angular.z = -turn_Angle
+					
+			##   Left_Beam    ## Taking a right turn in this case should only happen when right side is not blocked
+			elif ((left_rpl < sensor_Threshold)or(mid_left < sensor_Threshold)) and ((right_rpl > left_rpl)or(mid_right > mid_left)): 
+					
+					msg.linear.x = slow_Down
+					msg.angular.z = turn_Angle
+							
+			##   Right_Beam  ## Taking a left turn in this case should only happen when left side is not blocked
+			elif ((right_rpl < sensor_Threshold) or (mid_right < sensor_Threshold)) and((left_rpl > right_rpl)or(mid_left > mid_right)):
+					
+					msg.linear.x = slow_Down
+					msg.angular.z = -turn_Angle
+			
+			else:	
+					msg.linear.x = max_Speed
+					msg.angular.z = stop	
+			
 		
 		self.cmd_pub_.publish(msg)
+		
 		
 		# Next step is to get 1 value in the direction directly forward to the robot and then 
 		# move right or left to not hit any obstacles.

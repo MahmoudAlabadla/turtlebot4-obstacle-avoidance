@@ -1,0 +1,53 @@
+Read
+
+if we have an array or a tuple with lots of variables and we know the starting and ending positions of the ones we want to examine then, we can have a triangluar beam of laser sensning distances in forward direction and so we can have a better vison of objects that aren't perpendiculary opposite to the robot but rather have a angle wich makes it harder for a single beam of laser to detect it.
+
+We need a function that if called, it can examine a range of laser data beam against a specfic distance parameter given a the current full tupple of sensor data and the middle position of the data to be scanned and a distance threeshold for [articular scan position.
+
+
+## Function Description##
+#
+	1) parameters for functions are the full tuple of lidar data, the index at which data should be examined, max distance to objests, and range on indexes to be examined. 
+
+	2) This is a generic function which if given any set of relevent parameters, whould be able to identify an obstacle within given distance threshold and call the turn function.
+
+	3) to minimize or optimize run time, the function uses break statements to exit the for loops if the conditions have been met. Moreover, the full range of data will rarley be examined as the second loop will almost always not be executed because of the if statement that only allows contuiation incase the right side of data ranges do not triger the turn function.
+	
+########
+void scanning_Range (int full_Range, int LaserBeamPos, int distance_Threshold, int degrees_Range){
+
+	int start_Range = LaserBeamPos - degrees_Range;      
+	int end_Range = LaserBeamPos + degrees_Range;
+	char detected = False;	
+	
+	for (int i = LaserBeamPos; i<=end_Range; i++){
+		if (full_Range[i] <= distance_Threshold){
+			turn(LaserBeamPos);
+			detected = True;
+			break;
+			}
+	}
+	if (detected == False)
+		for (int i = LaserBeamPos-1; i>=start_Range; i--){
+			
+			if (full_Range[i] <= distance_Threshold){
+			turn(LaserBeamPos);
+			detected = True; # unneccessary at this point in code.
+			break;
+			}
+		}	
+}
+
+lets add a header file containning all the magic numbers.
+
+make all these variable global variables.!!!!!!!
+
+int forward_degrees_Range = 10;
+int sides_degrees_Range = 5;
+int for_dis_Threshold  = 0.55;
+int right_left_dis_Threshold =   ;
+
+
+
+int right = 1;
+int left = -1;
