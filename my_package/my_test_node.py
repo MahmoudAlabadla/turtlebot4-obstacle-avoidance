@@ -23,9 +23,9 @@ class PubSubNode(Node):
 		far_right_rpl = laser.ranges[int((full_range // 4)*1.75)]
 		far_left_rpl = laser.ranges [((full_range//4)//2)//2]
 		
-		max_Speed = 0.5
+		max_Speed = 0.4
 		stop = 0.0
-		turn_Angle = 1.0
+		turn_Angle = 1.1
 		special_Case_Angle = 1.2
 		slow_Down = 0.35
 		sensor_Threshold = 0.65
@@ -37,7 +37,12 @@ class PubSubNode(Node):
 			msg.linear.x = stop						
 			msg.angular.z = -special_Case_Angle
 			
-		elif ((forward_rpl < special_Case_Threshold)and(mid_left < sensor_Threshold)or(mid_right < sensor_Threshold)):
+		#elif ((forward_rpl < special_Case_Threshold)and(mid_left < sensor_Threshold)or(mid_right < sensor_Threshold)):
+		
+		#	msg.linear.x = stop
+		#	msg.angular.z = -turn_Angle
+			
+		elif ((forward_rpl < special_Case_Threshold)and(left_rpl < sensor_Threshold)or(right_rpl < sensor_Threshold)):
 		
 			msg.linear.x = stop
 			msg.angular.z = -turn_Angle
