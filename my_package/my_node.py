@@ -12,12 +12,9 @@ class PubSubNode(Node):
 		self.cmd_pub_ = self.create_publisher(Twist, '/cmd_vel', 10) ## twist is type of message data
 		self.laser_sub_ = self.create_subscription(LaserScan,'/scan',self.listener_callback,10) ## laserscan is the type of message data
 				
-
 		self.start_Time = time.time()
 		self.stop_Time = self.start_Time + 60.0
 		
-		
-	
 		self.max_Speed = 0.4
 		self.stop = 0.0
 		self.turn_Angle = 1.0
@@ -25,7 +22,7 @@ class PubSubNode(Node):
 		self.slow_Down = 0.35
 		self.sensor_Threshold = 0.65
 		self.special_Case_Threshold = 0.45
-		self.special_Case_Threshold_side = 0.55
+		self.special_Case_Threshold_side = 0.45 ## 0.55			play around with this number 
 		
 		
   ## calll back function for laserscan topic ##
@@ -34,7 +31,7 @@ class PubSubNode(Node):
 		msg = Twist()
 		full_range = len(laser.ranges)
 		
-		self.start_Time = time.time()
+		self.start_Time = time.time()   # variable start time needs to update every loop to keep up with current time from import time library
 		
 		forward_rpl = laser.ranges[full_range//4]
 		left_rpl = laser.ranges[(full_range//4)//2] 
