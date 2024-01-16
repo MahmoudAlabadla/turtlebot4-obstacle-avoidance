@@ -13,14 +13,15 @@ class PubSubNode(Node):
 		self.laser_sub_ = self.create_subscription(LaserScan,'/scan',self.listener_callback,10) ## laserscan is the type of message data
 				
 		self.start_Time = time.time()
-		self.stop_Time = self.start_Time + 60.0
+		self.stop_Time = self.start_Time + 120.0
 		self.time_Remaining = 0 
 		
 		self.max_Speed = 0.4
 		self.stop = 0.0
 		self.turn_Angle = 0.7
-		self.special_forward_turn_Angle = 0.8
+		self.special_forward_turn_Angle = 0.9  ## back to 0.8
 		self.special_Case_Angle = 1.1	
+		self.Extream_Case_Angle = 2.0
 		self.slow_Down = 0.35
 		self.slow_Down_2 = 0.15
 		self.extra_sensor_Threshold = 0.65
@@ -30,14 +31,14 @@ class PubSubNode(Node):
 		
 		
 		
-  						## calll back function for laserscan topic ##
+  									## calll back function for laserscan topic ##
   						
 	def listener_callback(self, laser: LaserScan):   #laser is only a variable 
 		
 		msg = Twist()
 		full_range = len(laser.ranges)
 		
-		self.start_Time = time.time()   # variable start time needs to update every loop to keep up with current time from import time library
+		self.start_Time = time.time()   # variable start time needs to update every loop to keep up with current time from imported time library
 		
 		forward_rpl = laser.ranges[full_range//4]
 		left_rpl = laser.ranges[(full_range//4)//2] 
@@ -54,7 +55,7 @@ class PubSubNode(Node):
 			msg.linear.x = self.stop						
 			msg.angular.z = -self.special_Case_Angle
 			
-						##   The only other case where speed is set to zero, if robot is too close to obstacle and rotaion angle while moving would not be ideal	
+						##   Another case where speed is set to zero, if robot is too close to obstacle and rotaion angle while moving would not be ideal	
 		elif ((forward_rpl < self.special_Case_Threshold)and(mid_left < self.special_Case_Threshold_side)or(mid_right < self.special_Case_Threshold_side)):
 		
 			
@@ -83,7 +84,21 @@ class PubSubNode(Node):
 				
 					msg.linear.x = self.slow_Down
 					msg.angular.z = -self.turn_Angle
-			
+					
+					
+						## Extreem cases where the oriantation of an obstacle only allows for midle_Lidar readings to activate a condition ##
+						
+			elif ((mid_right < self.special_Case_Threshold) and (right_rpl > self.sensor_Threshold and forward_rpl > self.sensor_Threshold and mid_left > self.sensor_Threshold and left_rpl> self.sensor_Threshold )):
+					msg.linear.x = self.stop
+					msg.angular.z = -self.Extream_Case_Angle
+					
+					
+			elif ((mid_left < self.special_Case_Threshold) and (right_rpl > self.sensor_Threshold and forward_rpl > self.sensor_Threshold and mid_right > self.sensor_Threshold and left_rpl> self.sensor_Threshold )):
+					msg.linear.x = self.stop
+					msg.angular.z = self.Extream_Case_Angle
+					
+					
+						## Normal action is to move forward as long as no condition has been met
 			else:	
 					msg.linear.x = self.max_Speed
 					msg.angular.z = self.stop	
@@ -94,8 +109,6 @@ class PubSubNode(Node):
 			
 			self.time_Remaining = self.stop_Time - self.start_Time
 			self.get_logger().info(f"Time Remaining: { round (self.time_Remaining) }")
-			#self.get_logger().info(f"Time Remaining: {}",format.round(self.time_Remaining))
-			#self.get_logger().info("Working")
 		else:
 			self.get_logger().info("Job Done, Time Constraint achieved")
 			rclpy.shutdown()

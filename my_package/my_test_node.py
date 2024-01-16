@@ -7,14 +7,7 @@ from geometry_msgs.msg import Twist
 from sensor_msgs.msg import LaserScan # just like geometry we import laser
 from enum import Enum
 
-class Speed_Direction_State(Enum):  # The seven modes refer to seven possible conditions or actions
-	speed_Mode_One = 1
-	speed_Mode_Two = 2
-	speed_Mode_Three = 3 
-	speed_Mode_Four = 4
-	speed_Mode_Five = 5 
-	speed_Mode_Six = 6
-	speed_Mode_Seven = 7 
+
 
 class PubSubNode(Node):
 	def __init__(self):
@@ -22,9 +15,10 @@ class PubSubNode(Node):
 		super().__init__("my_node")
 		self.cmd_pub_ = self.create_publisher(Twist, '/cmd_vel', 10) ## twist is type of message data
 		self.laser_sub_ = self.create_subscription(LaserScan,'/scan',self.listener_callback,10) ## laserscan is the type of message data
-				
+			
 		
 		self.msg = Twist()
+		
 		
 		self.start_Time = time.time()
 		self.stop_Time = self.start_Time + 60.0  #according to the time function format, 00.0 refers to seconds
@@ -42,11 +36,21 @@ class PubSubNode(Node):
 		self.special_Case_Threshold = 0.55        
 		self.special_Case_Threshold_side = 0.45
 		
-		self.operation.Mode = 0
+		self.operation_Mode = 0
+		
 		
 		## adding a level off abstraction ~~ two functions that would take an input argument such as direction and would set the appropriate values of x and z for twist message ~~
 		
-	def motion_Control (self.operation_Mode):	## Unfortinatily, match case (switch statement) is not in this version of python. 
+	class Speed_Direction_State(self, Enum):  # The seven modes refer to seven possible conditions or actions
+		speed_Mode_One = 1
+		speed_Mode_Two = 2
+		speed_Mode_Three = 3 
+		speed_Mode_Four = 4
+		speed_Mode_Five = 5 
+		speed_Mode_Six = 6
+		speed_Mode_Seven = 7 
+		
+	def motion_Control(self,operation_Mode):	## Unfortinatily, match case (switch statement) is not in this version of python. 
 	
 		if self.operation_Mode == Speed_Direction_State.speed_Mode_One:
 			
@@ -104,37 +108,37 @@ class PubSubNode(Node):
 									## Stuck? stop and make a U-turn
 		if ((forward_rpl < self.sensor_Threshold)and(mid_left < self.sensor_Threshold)and(mid_right < self.sensor_Threshold)and(left_rpl < self.special_Case_Threshold_side)and(right_rpl < self.special_Case_Threshold_side)):
 			
-			motion_Control(Speed_Direction_State.speed_Mode_One):
+			self.motion_Control(self.Speed_Direction_State.speed_Mode_One)
 			
 						##   The only other case where speed is set to zero, if robot is too close to obstacle and rotaion angle while moving would not be ideal	
 		elif ((forward_rpl < self.special_Case_Threshold)and(mid_left < self.special_Case_Threshold_side)or(mid_right < self.special_Case_Threshold_side)):
 		
-			motion_Control(Speed_Direction_State.speed_Mode_Two):
+			self.motion_Control(self.Speed_Direction_State.speed_Mode_Two)
 			
 		else:
 						##   Forward_Beam  ## Addition of right and left values help determine better rotational angle
 			if ((forward_rpl < self.extra_sensor_Threshold)and(left_rpl >= right_rpl)): 
 					
-					motion_Control(Speed_Direction_State.speed_Mode_Three):
+					self.motion_Control(self.Speed_Direction_State.speed_Mode_Three)
 					
 					
 			elif ((forward_rpl < self.extra_sensor_Threshold)and(right_rpl >= left_rpl)):
 					
-					motion_Control(Speed_Direction_State.speed_Mode_Four):
+					self.motion_Control(self.Speed_Direction_State.speed_Mode_Four)
 							
 						##   Left_Beam    ## Taking a right turn in this case should only happen when right side is not blocked
 			elif ((left_rpl < self.sensor_Threshold)or(mid_left < self.special_Case_Threshold)) and ((right_rpl > left_rpl)or(mid_right > mid_left)): 				
 				
-					motion_Control(Speed_Direction_State.speed_Mode_Five):
+					self.motion_Control(self.Speed_Direction_State.speed_Mode_Five)
 							
 						##   Right_Beam  ## Taking a left turn in this case should only happen when left side is not blocked
 			elif ((right_rpl < self.sensor_Threshold) or (mid_right < self.special_Case_Threshold)) and((left_rpl > right_rpl)or(mid_left > mid_right)):
 				
-					motion_Control(Speed_Direction_State.speed_Mode_Six):
+					self.motion_Control(self.Speed_Direction_State.speed_Mode_Six)
 								
 			
 			else:	
-					motion_Control(Speed_Direction_State.speed_Mode_Seven):
+					self.motion_Control(self.Speed_Direction_State.speed_Mode_Seven)
 							
 		self.cmd_pub_.publish(self.msg)
 		
@@ -142,8 +146,6 @@ class PubSubNode(Node):
 			
 			self.time_Remaining = self.stop_Time - self.start_Time
 			self.get_logger().info(f"Time Remaining: { round (self.time_Remaining) }")
-			#self.get_logger().info(f"Time Remaining: {}",format.round(self.time_Remaining))
-			#self.get_logger().info("Working") 
 		else:
 			self.get_logger().info("Job Done, Time Constraint achieved")
 			rclpy.shutdown()
