@@ -13,14 +13,14 @@ class PubSubNode(Node):
 		self.laser_sub_ = self.create_subscription(LaserScan,'/scan',self.listener_callback,10) ## laserscan is the type of message data
 				
 		self.start_Time = time.time()
-		self.stop_Time = self.start_Time + 120.0
+		self.stop_Time = self.start_Time + 60.0
 		self.time_Remaining = 0 
 		
 		self.max_Speed = 0.4
 		self.stop = 0.0
 		self.turn_Angle = 0.7
-		self.special_forward_turn_Angle = 0.9  ## back to 0.8
-		self.special_Case_Angle = 1.1	
+		self.special_forward_turn_Angle = 1.1  ## back to 0.8
+		self.special_Case_Angle = 1.3	
 		self.Extream_Case_Angle = 2.0
 		self.slow_Down = 0.35
 		self.slow_Down_2 = 0.15
@@ -28,7 +28,6 @@ class PubSubNode(Node):
 		self.sensor_Threshold = 0.65
 		self.special_Case_Threshold = 0.55        
 		self.special_Case_Threshold_side = 0.45
-		
 		
 		
   									## calll back function for laserscan topic ##
