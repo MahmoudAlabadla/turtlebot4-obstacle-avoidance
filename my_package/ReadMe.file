@@ -1,62 +1,17 @@
-checking function
+In this document is a guild to run a ROS2 package. Follow the instructions to successfully upload the package onto the TurtleBot and run the code.
+The mission of this TurtleBot is to navigate the environment while avoiding every possible obstacle in its way. Moreover, the Bot should only run for a minute. The ROS2 code is designed to use two topics on the Turltebot, the first being the /Cmd_vel and the second is the /scan topic. These topics use messages of type twist and laserscan respectively.
 
+Follow the steps below to get the Turtlebot4 up and running.
+1)	Downloading the package from the lab code repository through the link provided. https://labcode.mdx.ac.uk/Mahmoud_Alabadla/my_package.git. 
+2)	Open 3 terminals on your virtual machine 
+a.	In terminal one, type the command (ssh ubuntu@192.168.8.ID) to access the TurtleBot’s Raspberry Pi and then run the command line (ros2 launch rplidar_ros rplidar_c1.launch) to activate the lidar and keep it running.
+b.	In terminal two, right the command line (scp -r my_package ubuntu@19.168.8.ID:my_package) to copy the package into the robot’s root folder.
+c.	In a third terminal, re-enter the command (ssh ubuntu@192.168.8.ID) to enter the robot's Rasberry Pi once more.
+3)	Using the terminal, move the package from the root folder on the workspace and then into the source folder using the following command. (mv my_package ros_ws/src/)
+4)	Now enter into the workspace by typing the command line, (cd ros_ws/)
+5)	Here, we can build the package and its dependencies by typing the command, (Colcon Build).
+6)	Followed by a command line (Source install/setup.bash).
+7)	Lastly, to run the code, type the line (ros2 run my_package my_node). 
 
-what is this function doing ?
+On the terminal, a print loop will print the remaining time left for the robot to shut down which is a one-minute timer after which the screen should display “mission accomplished”.
 
-	1) one parameter, right or left 
-	2) return the value of the lowest value in the list of ranges
-	3) same logic liket the scanning_Ranges function but only for one direction
-	4) should also check fixed global data 
-	5) should give back the lowest value seen by the 
-	
-int check (int check_direction){
-
-
-int lowest_Right = Max;				#local 
-int lowest_mid_Right = Max;			#local
-int lowest _Left = Max ;			#local
-int lowest_mid_Left = Max;			#local
-
-
-	if (check_direction == right ){ 
-		for (int i = (right_rpl - sides_degrees_Range); i<= (right_rpl + sides_degrees_Range) ; i++){
-			
-			if (full_range[i] < lowest_Right){
-				lowest_Right = full_range[i];
-			}	
-		}
-		for (int i = (mid_Right - sides_degrees_Range); i<= (mid_Right + sides_degrees_Range); i++){
-		
-			if (full_Range[i] < lowest_mid_Right){
-				lowest_mid_Right = full_Range[i];
-			}			
-		}	
-		
-		if (lowest_mid_Right < lowest_Right){
-			return lowest_mid_Right;		
-		}else
-			return lowest_right;
-	}
-	else{
-		
-		for (int i = (left_rpl - sides_degrees_Range); i<= (left_rpl + sides_degrees_Range) ; i++){
-			
-			if (full_range[i] < lowest_Left){
-				lowest_Left = full_range[i];
-			}	
-		}
-		for (int i = (mid_left - sides_degrees_Range); i<= (mid_left + sides_degrees_Range); i++){
-		
-			if (full_Range[i] < lowest_mid_Left){
-				lowest_mid_Left = full_Range[i];
-			}			
-		}	
-		
-		if (lowest_mid_Left < lowest_Left){
-			return lowest_mid_Left;		
-		}else
-			return lowest_Left;
-		
-		}
-	}
-	

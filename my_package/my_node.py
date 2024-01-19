@@ -19,7 +19,7 @@ class PubSubNode(Node):
 		self.max_Speed = 0.4
 		self.stop = 0.0
 		self.turn_Angle = 0.7
-		self.special_forward_turn_Angle = 1.1  ## back to 0.8
+		self.special_forward_turn_Angle = 1.1  
 		self.special_Case_Angle = 1.3	
 		self.Extream_Case_Angle = 2.0
 		self.slow_Down = 0.35
